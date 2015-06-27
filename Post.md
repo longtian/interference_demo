@@ -73,7 +73,7 @@ Content-Length: 137\r\n
 
 Debugger 协议就是这么的简单。
 
-### 实例化一个 Debugg Client
+### 实例化一个 Debugger Client
 
 了解了 Debugger 协议后，相信好奇心强的程序员已经跃跃欲试自己实现一个了。本着不重复发明轮子的原则开始在网上找实现，找了好久找到这个库 [pDebug](https://www.npmjs.com/package/pDebug)，
 可惜这个库已经好久不更新了。后来通过阅读 `node-inspector` 的源码才发现，其实 NodeJS 自带了一个 Debugger 模块, 相关代码在 `_debugger` 
@@ -91,7 +91,7 @@ client.on('ready', function () {
 });
 ```
 
-### 关键时刻到来了
+### 通过 Debugger 接口执行命令
 
 接下来我们来看看如何修改这个 global 的变量，代码如下
 
