@@ -140,14 +140,13 @@ function modifyTheMessage(newMessage) {
 
 由于 Chrome 也是基于 V8 的，上述方法也可以用于 Chrome 相关的功能集成
 
-###
+### 关于
 
-本文相关的源码在：
+1\. 本文相关的源码在：
 [https://github.com/wyvernnot/interference_demo](https://github.com/wyvernnot/interference_demo);
 
-如果你也对 Debugger 协议感兴趣，可以安装 oneapm-debugger 这个工具，它可以帮助你查看 Debug 过程中所有实际发送的数据。
+2\. 如果你也对 Debugger 协议感兴趣，可以安装 oneapm-debugger 这个工具，它可以帮助你查看 Debug 过程中所有实际发送的数据。
 [oneapm-debugger](https://www.npmjs.com/package/oneapm-debugger)
 
-
-本文由[OneAPM](http://www.oneapm.com/?hmsr=media&hmmd=&hmpl=&hmkw=&hmci=)工程师原创 ，想阅读更多技术文章，请访问[OneAPM官方技术博客](http://code.oneapm.com/?hmsr=media&hmmd=&hmpl=&hmkw=&hmci=)。
+> 本文由[OneAPM](http://www.oneapm.com/?hmsr=media&hmmd=&hmpl=&hmkw=&hmci=)工程师原创 ，想阅读更多技术文章，请访问[OneAPM官方技术博客](http://code.oneapm.com/?hmsr=media&hmmd=&hmpl=&hmkw=&hmci=)。
 
