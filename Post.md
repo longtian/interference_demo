@@ -17,31 +17,37 @@ var server = require('http').createServer(function (req, res) {
 console.log('pid = %d', process.pid);
 ```
 
-用命令启动 Server，可以在控制台看到进程的 pid，记住这个数值因为之后要用到。此时，通过用浏览器访问 `http://localhost:8001` 可以看到网页
-上是 `hello world!`。 接下来我们将尝试在不改变代码，不重启进程的情况下把 `message` 换成 "hello bugs!"。
+用命令启动 Server，此时，通过用浏览器访问 `http://localhost:8001` 可以看到网页内容是 `hello world!`。 
+接下来我们将尝试在不改变代码，不重启进程的情况下把 `message` 换成 "hello bugs!"。
 
 ## 使 Server 进程进入 Debug 模式
 
-V8 引擎在实现的时候留了一个 Debugger 接口。在操作系统下给进程发一个 `SIGUSR1` 可以让 NodeJS 进程进入 Debug 模式。
-进入 Debug 模式的进程会在本地启动一个 TCP Server 并且监听 `5858` 端口。 此时执行命令 `node debug localhost:5858` 就可以连接到调试
-端口， 并且可以使用很多常用的 Debug 命令，比如 `c`继续执行，`s` 步入， `o`步出等。
+V8 引擎在实现的时候留了 Debugger 接口。 通过命令 `node --debug-brk=5858 [filename]` 可以启动一个脚本，并且立即进入 Debug 模式。
+
+那么如果是已经运行着的 NodeJS 程序，可以进入 Debug 模式吗？也是可以的，在操作系统下给 NodeJS 的进程发一个 `SIGUSR1` 信号，可以让进程进入 Debug 模式。
+进入 Debug 模式的进程会在本地启动一个 TCP Server 并且默认监听 `5858` 端口。 
+
+此时在另一个命令行窗口执行命令 `node debug localhost:5858` 就可以连接到 Debugger 调试端口， 并且可以使用很多常用的 Debug 命令，比如 `c`继续执行，`s` 步入， `o`步出等。
 
 ## Debugger 协议
 
-使用 `node debug` 命令连接到进程进行 Debug 的方式比较简单，但是要完成一些高级的功能就会处处受限，因为它只封装了 Debugger 协议中的一部分。下面介绍一下
-这个简单的协议。
+使用 `node debug hostname:port` 命令连接到进程进行 Debug 的方式比较简单，但是要完成一些高级的功能就会处处受限，因为它只封装了 Debugger 协议中 command 的一部分。
+下面介绍一下这个简单的协议。
 
-DebugClient 和 DebugServer 的通讯是通过 TCP 进行的。 DebugClient 第一次连接到 DebugServer 的时候会拿到一些 Header，比如 Node 版本， V8 版本等。
-后面紧跟着一个空的消息1
+Client 和 Server 的通讯是通过 TCP 进行的。 DebugClient 第一次连接到 DebugServer 的时候会拿到一些 Header，比如 Node 版本， V8 版本等。后面紧跟着一个空的消息1
 
 **消息1**
 
 ```text
-Content-Length: 0 \r\n
+Type: connect\r\n
+V8-Version: 3.28.71.19\r\n
+Protocol-Version: 1\r\n
+Embedding-Host: node v0.12.4\r\n
+Content-Length: 0\r\n
 \r\n
 ```
 
-消息实体分成 Header 和 Body，消息1的 Body 为空，所以 Header 中对应的 Content-Length 为 0。而在下面这个例子里，Body 为一个单行的 JSON 字符串，这是由协议所规定的。
+消息实体由 Header 和 Body 组成，消息1的 Body 为空，所以 Header 中对应的 Content-Length 为 0。而在下面这个例子里，Body 为一个单行的 JSON 字符串，这是由协议所规定的。
 
 
 **消息2**
@@ -110,7 +116,9 @@ function modifyTheMessage(newMessage) {
 
 ### 总结
 
-此时，再访问 `http://localhost:8001` 可以看到网页上显示的内容已经由 `'hello world!'` 变成了 `'hello bugs!'`，是不是很神奇。这种方式也带来了很多可能性：
+此时，再访问 `http://localhost:8001` 可以看到网页上显示的内容已经由 `'hello world!'` 变成了 `'hello bugs!'`，是不是很神奇。
+
+这种方式也带来了很多可能性：
 
 - 动态修改配置
 
@@ -132,8 +140,14 @@ function modifyTheMessage(newMessage) {
 
 由于 Chrome 也是基于 V8 的，上述方法也可以用于 Chrome 相关的功能集成
 
-相关的源码在：
+###
+
+本文相关的源码在：
 [https://github.com/wyvernnot/interference_demo](https://github.com/wyvernnot/interference_demo);
 
 如果你也对 Debugger 协议感兴趣，可以安装 oneapm-debugger 这个工具，它可以帮助你查看 Debug 过程中所有实际发送的数据。
 [oneapm-debugger](https://www.npmjs.com/package/oneapm-debugger)
+
+
+本文由[OneAPM](http://www.oneapm.com/?hmsr=media&hmmd=&hmpl=&hmkw=&hmci=)工程师原创 ，想阅读更多技术文章，请访问[OneAPM官方技术博客](http://code.oneapm.com/?hmsr=media&hmmd=&hmpl=&hmkw=&hmci=)。
+
