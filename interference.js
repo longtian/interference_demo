@@ -1,11 +1,11 @@
 "use strict";
 
-if(process.argv.length<3){
+if (process.argv.length < 3) {
     console.log('Usage: node interference.js <pid>');
     process.exit(1);
 }
 
-var pid = parseInt(process.argv[2],10);
+var pid = parseInt(process.argv[2], 10);
 var Client = require('_debugger').Client;
 var client = new Client();
 
@@ -51,13 +51,14 @@ function peekTheMessage() {
  *
  */
 function modifyTheMessage(newMessage) {
-    client.req({
+    var msg = {
         'command': 'evaluate',
         'arguments': {
             'expression': 'global.message="' + newMessage + '"',
             'global': true
         }
-    }, function (err, body, res) {
+    };
+    client.req(msg, function (err, body, res) {
         console.log('modified to %s', newMessage);
     });
 }
