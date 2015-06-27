@@ -1,6 +1,6 @@
-# 使用 Debugger 动态修改 NodeJS 程序中的变量值
+# 动态修改 NodeJS 程序中的变量值
 
-如果一个 NodeJS 进程正在运行，有办法修改程序中的变量值么？答案是：可以！本文将详细讲解如何实现。
+如果一个 NodeJS 进程正在运行，有办法修改程序中的变量值么？答案是：通过 V8 的 Debugger 接口可以！本文将详细介绍实现步骤。
 
 ## 启动一个 HTTP Server
 
@@ -17,12 +17,12 @@ var server = require('http').createServer(function (req, res) {
 console.log('pid = %d', process.pid);
 ```
 
-通过命令启动 Server，可以看到进程的 pid，记住这个数值因为之后要用到。此时，通过用浏览器访问 `http://localhost:8001` 可以看到网页
+用命令启动 Server，可以在控制台看到进程的 pid，记住这个数值因为之后要用到。此时，通过用浏览器访问 `http://localhost:8001` 可以看到网页
 上是 `hello world!`。 接下来我们将尝试在不改变代码，不重启进程的情况下把 `message` 换成 "hello bugs!"。
 
 ## 使 Server 进程进入 Debug 模式
 
-V8 引擎在实现的时候留了一个 Debug 接口。在操作系统下给进程发一个 `SIGUSR1` 可以让 NodeJS 进程进入 Debug 模式。
+V8 引擎在实现的时候留了一个 Debugger 接口。在操作系统下给进程发一个 `SIGUSR1` 可以让 NodeJS 进程进入 Debug 模式。
 进入 Debug 模式的进程会在本地启动一个 TCP Server 并且监听 `5858` 端口。 此时执行命令 `node debug localhost:5858` 就可以连接到调试
 端口， 并且可以使用很多常用的 Debug 命令，比如 `c`继续执行，`s` 步入， `o`步出等。
 
@@ -131,3 +131,9 @@ function modifyTheMessage(newMessage) {
 - Chrome 调试
 
 由于 Chrome 也是基于 V8 的，上述方法也可以用于 Chrome 相关的功能集成
+
+相关的源码在：
+[https://github.com/wyvernnot/interference_demo](https://github.com/wyvernnot/interference_demo);
+
+如果你也对 Debugger 协议感兴趣，可以安装 oneapm-debugger 这个工具，它可以帮助你查看 Debug 过程中所有实际发送的数据。
+[oneapm-debugger](https://www.npmjs.com/package/oneapm-debugger)
